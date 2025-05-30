@@ -3,6 +3,7 @@ import gc
 import torch
 import random
 import pickle
+import argparse
 import numpy as np
 import pandas as pd
 from sklearn.metrics import r2_score, mean_absolute_error
@@ -14,10 +15,16 @@ import globals
 from model_trainer import ModelTrainer
 from cof_processor import COFProcessor
 from optimization_processor import OptimizationProcessor
-from utility_functions import calculate_r2_score, explained_variance
+from utility_functions import select_dataset, calculate_r2_score, explained_variance
 
 if __name__ == "__main__":
     
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t',   '--target',  help='Define the name of the desired target property.', default="nch4")
+    
+    parsed_args    = parser.parse_args()
+    target_property   = parsed_args.target
+
     print(f"Using device: {globals.device}")
 
     # Set default tensor type to PRECISION
@@ -25,34 +32,12 @@ if __name__ == "__main__":
 
     np.random.seed(11)
 
-    df = pd.read_csv('HypoCOF-CH4H2-CH4-1bar-TPOT-Input-B - Original.csv')
-    # df = pd.read_csv('HypoCOF-CH4H2-H2-1bar-TPOT-Input-B - Original.csv')
-
-    # Drop the 'MOF_no' column as it is no longer needed
-    # df.drop(columns=['number'], inplace=True)
-    row_count = df.shape[0]
-    print("Number of rows in the dataset:", row_count)
-    df.dropna(inplace=True)
-
-    row_count = df.shape[0]
-    print("Number of rows in the dataset:", row_count)
-
-    # Display the column names
-    print("Column names in the file:")
-    print(df.columns.tolist())
-
-    feature_columns = [  'PLD (Å)', 'LCD (Å)', 'Sacc (m2/gr)', 'Porosity', 'Density (gr/cm3)',
-            # 'Qst-CH4 (kJ/mol)',
-            '%C', '%F', '%H', '%N', '%O', '%S', '%Si'
-            ]
+    df, feature_columns, y_column = select_dataset(target_property)
 
     feature_columns_df = df[feature_columns]
 
-    y_column = 'NCH4 - 1 bar (mol/kg)'
-    # y_column = 'NH2 - 1 bar (mol/kg)'
-
-
-    y = torch.from_numpy(df[y_column].values).double().to(globals.device)  # Update the target variable used in the rest of the pipeline
+    # Update the target variable used in the rest of the pipeline
+    y = torch.from_numpy(df[y_column].values).double().to(globals.device)
 
     # Select features for X
     X = df[feature_columns]
