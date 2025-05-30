@@ -151,31 +151,6 @@ if __name__ == "__main__":
     top_100_pred_in_true = np.intersect1d(predicted_top_100_indices, actual_top_100_indices)
     count_top_100_pred_in_true = len(top_100_pred_in_true)
 
-    gridspec_kw = {'width_ratios': [6, 2], 'height_ratios': [2, 6]}
-    fig, ax = plt.subplots(nrows=2, ncols=2, gridspec_kw=gridspec_kw, figsize=(12, 12))  # Increased figure size
-    ax[0, 1].axis("off")
-
-    ax[1, 0].plot([min(y_true), max(y_true)], [min(y_true), max(y_true)], linestyle="--", color="k", linewidth=1)
-    ax[1, 0].text(min(y_true) + (max(y_true) - min(y_true)) * 0.05, max(y_true) * 0.9, "R$^2$=%.2f\nMAE=%.2f" % (r2, abserr))
-    ax[1, 0].scatter(y_true, y_pred, fc='none', ec="k")
-    ax[1, 0].set_xlabel("True Methane Uptake High P")
-    ax[1, 0].set_ylabel("Predicted Methane Uptake High P")
-
-    hist_color = sns.color_palette("husl", 8)[7]
-    ax[0, 0].hist(y_true, color=hist_color, alpha=0.5)
-    ax[0, 0].sharex(ax[1, 0])
-    ax[0, 0].set_ylabel('# COFs')
-    plt.setp(ax[0, 0].get_xticklabels(), visible=False)
-
-    ax[1, 1].hist(y_pred, color=hist_color, alpha=0.5, orientation="horizontal")
-    ax[1, 1].sharey(ax[1, 0])
-    ax[1, 1].set_xlabel('# COFs')
-    plt.setp(ax[1, 1].get_yticklabels(), visible=False)
-
-    sns.despine()
-    plt.tight_layout()
-    plt.show()
-
     # Standardize the entire dataset
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X.cpu().numpy())
@@ -183,25 +158,6 @@ if __name__ == "__main__":
     # Perform PCA on the standardized dataset
     pca = PCA(n_components=2)
     X_pca = pca.fit_transform(X_scaled)
-
-    # Plot the PCA results
-    plt.figure(figsize=(10, 8))
-    plt.scatter(X_pca[:, 0], X_pca[:, 1], alpha=0.5, label='All COFs')
-
-    # Highlight the top 100 predicted COFs with blue X
-    plt.scatter(X_pca[predicted_top_100_indices, 0], X_pca[predicted_top_100_indices, 1], color='blue', marker='x', label='Top 100 Predicted COFs')
-
-    # Highlight the actual top 100 COFs with red +
-    plt.scatter(X_pca[actual_top_100_indices, 0], X_pca[actual_top_100_indices, 1], color='red', marker='+', label='Top 100 Actual COFs')
-
-    plt.xlabel('PCA Component 1')
-    plt.ylabel('PCA Component 2')
-    plt.title(f'PCA of COFs with Top 100 Predicted and Actual COFs Highlighted\n'
-            f'Number of top 100 predicted COFs in top 100 actual: {count_top_100_pred_in_true}')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
 
     # Convert y_true to a NumPy array before calling the function
     y_true_np = np.array(y_true)
@@ -255,17 +211,6 @@ if __name__ == "__main__":
     r2_full = r2_score(y_full, y_pred_full)
     mae_full = mean_absolute_error(y_full, y_pred_full)
 
-    # Plot predicted vs true values for the entire dataset
-    plt.figure(figsize=(8, 6))
-    plt.scatter(y_full, y_pred_full, edgecolor='k', alpha=0.7)
-    plt.plot([min(y_full), max(y_full)], [min(y_full), max(y_full)], '--', color='gray')
-    plt.xlabel('True Methane Uptake (High P)')
-    plt.ylabel('Predicted Methane Uptake (High P)')
-    plt.title(f'Predicted vs True Methane Uptake on Entire Dataset\nR^2: {r2_full:.2f}, MAE: {mae_full:.2f}')
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
     # Identify the top 100 COFs based on true methane uptake values
     top_100_true_values = y_full[actual_top_100_indices]
 
@@ -292,67 +237,13 @@ if __name__ == "__main__":
     # Check if predicted_top_100_true_values is empty
     if len(predicted_top_100_true_values) == 0:
         print("No predictions available for the top 100 COFs.")
-    else:
-        # Plot predicted vs true values for the COFs that are actually in the top 100
-        plt.figure(figsize=(8, 6))
-        plt.scatter(predicted_top_100_true_values, predicted_top_100_values, edgecolor='k', alpha=0.7)
-        plt.plot([min(predicted_top_100_true_values), max(predicted_top_100_true_values)],
-                [min(predicted_top_100_true_values), max(predicted_top_100_true_values)], '--', color='gray')
-        plt.xlabel('True Methane Uptake (High P) - Top 100 COFs')
-        plt.ylabel('Predicted Methane Uptake (High P) - Top 100 COFs')
-        plt.title(f'Predicted vs True Methane Uptake for Top 100 COFs\nR^2: {r2_top_100:.2f}')
-        plt.grid(True)
-        plt.tight_layout()
-        plt.show()
 
     # Standardize the entire dataset
     # scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X_full)
 
-    # Plot the PCA results
-    plt.figure(figsize=(10, 8))
-    plt.scatter(X_pca[:, 0], X_pca[:, 1], alpha=0.5, label='All COFs')
-
-    # Highlight the top 100 predicted COFs with blue X
-    plt.scatter(X_pca[top_100_pred_indices, 0], X_pca[top_100_pred_indices, 1], color='blue', marker='x', label='Top 100 Predicted COFs')
-
-    # Highlight the actual top 100 COFs with red +
-    plt.scatter(X_pca[actual_top_100_indices, 0], X_pca[actual_top_100_indices, 1], color='red', marker='+', label='Top 100 Actual COFs')
-
-    plt.xlabel('PCA Component 1')
-    plt.ylabel('PCA Component 2')
-    plt.title(f'PCA of COFs with Top 100 Predicted and Actual COFs Highlighted, Number of actual top 100 COFs predicted by XGBoost: {count_actual_top_100_in_predicted}')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
-
     # Extract the data points picked by Bayesian Optimization
     bo_picked_indices = [int(acquired_set[i][0].item()) for i in range(len(acquired_set))]
-
-    # Plot the PCA results
-    plt.figure(figsize=(10, 8))
-    plt.scatter(X_pca[:, 0], X_pca[:, 1], alpha=0.5, label='All COFs')
-
-    # Highlight the top 100 predicted COFs with blue X
-    plt.scatter(X_pca[predicted_top_100_indices, 0], X_pca[predicted_top_100_indices, 1], color='blue', marker='x', label='Top 100 Predicted COFs')
-
-    # Highlight the actual top 100 COFs with red +
-    plt.scatter(X_pca[actual_top_100_indices, 0], X_pca[actual_top_100_indices, 1], color='red', marker='+', label='Top 100 Actual COFs')
-
-    # Highlight the B.O. picked data points with green X
-    plt.scatter(X_pca[bo_picked_indices, 0], X_pca[bo_picked_indices, 1], color='green', marker='x', label='B.O. Picked COFs')
-
-    plt.xlabel('PCA Component 1')
-    plt.ylabel('PCA Component 2')
-    plt.title(f'PCA of COFs with Top 100 Predicted and Actual COFs Highlighted By G.P.\n'
-            f'Number of top 100 predicted COFs in top 100 actual: {count_top_100_pred_in_true}')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
 
     # Calculate the actual top 100 COFs based on true values
     top_100_actual_indices = np.argsort(y.cpu().numpy())[-globals.TOP:]
