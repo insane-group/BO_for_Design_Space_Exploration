@@ -49,7 +49,7 @@ class ModelTrainer:
                 results_df.loc[results_df['COF_ID'] == idx, 'BO_XGBoost'] = y_bo_xgb_pred_full[idx]
 
 
-    def run_bo_gp(self, acquired_cof_ids, results_df):
+    def run_bo_gp(self, acquired_cof_ids, results_df, X):
 
         # Train a surrogate GP model on the BO-acquired points
         acquired_data = self.data.iloc[acquired_cof_ids]
@@ -61,8 +61,6 @@ class ModelTrainer:
 
         y_bo_gp_pred_full = y_bo_gp_pred_full.cpu().numpy()
         top_100_bo_gp_pred_indices = np.argsort(y_bo_gp_pred_full)[-globals.TOP:]
-        actual_top_100_in_bo = np.intersect1d(self.actual_top_100_indices, top_100_bo_gp_pred_indices)
-
 
         results_df['BO_GP'] = pd.Series([np.nan]*len(results_df))
         if len(top_100_bo_gp_pred_indices) > 0:

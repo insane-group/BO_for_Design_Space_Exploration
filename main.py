@@ -287,7 +287,7 @@ if __name__ == "__main__":
         model_trainer.run_bo_xgboost(acquired_cof_ids, results_df)
         
         # Train gaussian processes model with bo selected data points
-        model_trainer.run_bo_gp(acquired_cof_ids, results_df)
+        model_trainer.run_bo_gp(acquired_cof_ids, results_df, X)
 
         # Optionally, compute ranking for each predictor column
         predictor_cols = [col for col in results_df.columns if col.startswith('Random_State_')]
