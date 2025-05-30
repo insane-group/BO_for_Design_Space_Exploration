@@ -79,24 +79,26 @@ class OptimizationProcessor:
         return ei
 
     @staticmethod
-    def run_Bayesian_optimization(nb_iterations, initializing_COFs, batch_size=globals.BATCH_SIZE, verbose=False, stop_threshold=0.0000001, max_iteration=globals.ITER, target_variable=None, X=None):
+    def run_Bayesian_optimization(nb_iterations, initializing_COFs, batch_size=globals.BATCH_SIZE, verbose=False, stop_threshold=0.0000001, max_iteration=globals.ITER, X=None, y=None):
         local_threshold = globals.next_threshold
         assert nb_iterations > len(initializing_COFs)
         stop_flag = False
         acquired_set = COFProcessor.initialize_acquired_set(initializing_COFs)
         max_expected_improvement_seen = 0
-        top_cof_id = torch.argmax(target_variable).item()
+        top_cof_id = torch.argmax(y).item()
 
         # Create directory to save BO checkpoint files
-        bo_save_dir = "bo_points"
+
+        # TODO TODO TODO Change this back to bo_points!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        bo_save_dir = "bo_points_test"
         os.makedirs(bo_save_dir, exist_ok=True)
 
         bo_points_dict = {}
 
         for i in range(globals.ITER):
             print("BO iteration: ", i)
-            X_train = COFProcessor.build_X_train(acquired_set)
-            y_train = COFProcessor.build_y_train(acquired_set)
+            X_train = COFProcessor.build_X_train(acquired_set, X)
+            y_train = COFProcessor.build_y_train(acquired_set, y)
 
             # Set xi based on the iteration number
             xi = globals.INITIAL_XI if i < globals.XI_THRESHOLD else globals.FINAL_XI
@@ -115,7 +117,7 @@ class OptimizationProcessor:
             torch.cuda.empty_cache()
             gc.collect()
 
-            the_acquisition_scores = OptimizationProcessor.acquisition_scores(model, X, acquired_set, xi, target_variable)
+            the_acquisition_scores = OptimizationProcessor.acquisition_scores(model, X, acquired_set, xi, y)
 
             for cof_id in acquired_set:
                 the_acquisition_scores[int(cof_id)] = - np.inf
@@ -124,7 +126,7 @@ class OptimizationProcessor:
             batch_acq = torch.tensor([[idx] for idx in batch_indices], dtype=globals.PRECISION, device=globals.device)
             acquired_set = torch.cat((acquired_set, batch_acq))
 
-            ei_current = OptimizationProcessor.EI_hf(model, X, acquired_set, xi, target_variable)
+            ei_current = OptimizationProcessor.EI_hf(model, X, acquired_set, xi, y)
             total_expected_improvement = np.sum(ei_current)
             max_expected_improvement_seen = max(max_expected_improvement_seen, total_expected_improvement)
             percentage_of_max_expected_improvement = (total_expected_improvement / max_expected_improvement_seen) * 100

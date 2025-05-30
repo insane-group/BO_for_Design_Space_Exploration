@@ -109,7 +109,7 @@ if __name__ == "__main__":
     print("\t\tcost: ", cost.shape)
 
     # Use updated BO run (set nb_iterations appropriately)
-    acquired_set, bo_points_dict = OptimizationProcessor.run_Bayesian_optimization(nb_iterations, init_cof_ids[0], verbose=False, target_variable=y, X=X)
+    acquired_set, bo_points_dict = OptimizationProcessor.run_Bayesian_optimization(nb_iterations, init_cof_ids[0], verbose=False, X=X, y=y)
 
     cof_ids = [int(acquired_set[i][0].item()) for i in range(len(acquired_set))]
 
@@ -121,8 +121,8 @@ if __name__ == "__main__":
     hi_fid_cofs = [cof_ids[i] for i in range(len(cof_ids))]
 
     # Prepare the training data from the acquired set
-    X_train = COFProcessor.build_X_train(acquired_set[:n_iter_top_cof_found])
-    y_train = COFProcessor.build_y_train(acquired_set[:n_iter_top_cof_found])
+    X_train = COFProcessor.build_X_train(acquired_set[:n_iter_top_cof_found], X)
+    y_train = COFProcessor.build_y_train(acquired_set[:n_iter_top_cof_found], y)
 
     # Train the surrogate model
     model = OptimizationProcessor.train_surrogate_model(X_train, y_train)
