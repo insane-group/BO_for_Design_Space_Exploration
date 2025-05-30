@@ -51,12 +51,12 @@ class COFProcessor:
         return torch.any(cof_ids == cof_id)
 
     @staticmethod
-    def build_X_train(acquired_set):
+    def build_X_train(acquired_set, X):
         cof_ids = [int(a[0].item()) for a in acquired_set]  # Convert to integer indices
         return X[torch.tensor(cof_ids, device=globals.device, dtype=torch.long), :]
 
     @staticmethod
-    def build_y_train(acquired_set):
+    def build_y_train(acquired_set, y):
         cof_ids = [int(a[0].item()) for a in acquired_set]  # Convert to integer indices
         y_train = y[torch.tensor(cof_ids, device=globals.device, dtype=torch.long)].unsqueeze(-1)
         return y_train
