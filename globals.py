@@ -8,7 +8,6 @@ INITS = 3                       # Number of initial points from the design space
 BATCH_SIZE = 5                  # Define the batch size for sampling
 TOP = 10                        # Define the number of top COFs to be predicted
 next_threshold = 50
-bo_points_dict = {}
 nb_iterations = ITER
 
                                 # Define exploration-exploitation parameter for acquisition function

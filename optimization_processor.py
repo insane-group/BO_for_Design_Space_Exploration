@@ -79,8 +79,8 @@ class OptimizationProcessor:
         return ei
 
     @staticmethod
-    def run_Bayesian_optimization(nb_iterations, initializing_COFs, batch_size=globals.BATCH_SIZE, verbose=False, stop_threshold=0.0000001, max_iteration=globals.ITER, target_variable=None):
-        local_threshold = next_threshold
+    def run_Bayesian_optimization(nb_iterations, initializing_COFs, batch_size=globals.BATCH_SIZE, verbose=False, stop_threshold=0.0000001, max_iteration=globals.ITER, target_variable=None, X=None):
+        local_threshold = globals.next_threshold
         assert nb_iterations > len(initializing_COFs)
         stop_flag = False
         acquired_set = COFProcessor.initialize_acquired_set(initializing_COFs)
@@ -90,6 +90,8 @@ class OptimizationProcessor:
         # Create directory to save BO checkpoint files
         bo_save_dir = "bo_points"
         os.makedirs(bo_save_dir, exist_ok=True)
+
+        bo_points_dict = {}
 
         for i in range(globals.ITER):
             print("BO iteration: ", i)
@@ -146,10 +148,6 @@ class OptimizationProcessor:
                 np.savetxt(save_filename, current_sample, delimiter=",", fmt='%d')
                 print(f"Saved BO sampled points at iteration {iter_key} to {save_filename}")
                 local_threshold += 50
-
-            # if len(acquired_set) >= max_iteration * batch_size:
-            #     print(f"Desired total number of samples ({max_iteration * batch_size}) reached. Stopping optimization.")
-            #     break
 
             if i >= max_iteration:
                 print(f"Iteration count exceeded {max_iteration}. Stopping optimization.")
