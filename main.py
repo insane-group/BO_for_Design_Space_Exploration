@@ -1,3 +1,4 @@
+import os
 import gc
 import torch
 import random
@@ -13,6 +14,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 import globals
+from model_trainer import ModelTrainer
 from cof_processor import COFProcessor
 from optimization_processor import OptimizationProcessor
 from utility_functions import calculate_r2_score, explained_variance
@@ -368,3 +370,43 @@ if __name__ == "__main__":
     with open("bo_points_dict.pkl", "wb") as f:
         pickle.dump(bo_points_dict, f)
     print("All BO checkpoint sets saved.")
+
+    # Define output directory for results (one file per checkpoint)
+    output_dir = 'random_sampling_plots_methane'
+    os.makedirs(output_dir, exist_ok=True)
+
+    model_trainer = ModelTrainer(df, feature_columns, y_column, bo_points_dict)
+
+    # Now loop over each saved BO checkpoint (sample size)
+    for sample_size in sorted(bo_points_dict.keys()):
+        bo_sample = bo_points_dict[sample_size]  # This is a NumPy array of shape (n_points, 1)
+        acquired_cof_ids = bo_sample[:, 0].astype(int).tolist()  # Convert to list of indices
+        num_acquired_cofs = len(acquired_cof_ids)
+        
+        print(f"Processing BO checkpoint with {num_acquired_cofs} samples.")
+
+        # DataFrame to store results; start with COF IDs and true target values for the actual top 100
+        results_df = pd.DataFrame({'COF_ID': actual_top_100_indices,
+                                'True_Methane_Uptake': y_full[actual_top_100_indices]})
+        
+        # Train xgboost model with random data points.
+        model_trainer.run_random_xgboost(num_acquired_cofs, results_df)
+        
+        # Train xgboost model with bo selected data points.
+        model_trainer.run_bo_xgboost(acquired_cof_ids, results_df)
+        
+        # Train gaussian processes model with bo selected data points
+        model_trainer.run_bo_gp(acquired_cof_ids, results_df)
+
+        # Optionally, compute ranking for each predictor column
+        predictor_cols = [col for col in results_df.columns if col.startswith('Random_State_')]
+        predictor_cols.append('BO_XGBoost')
+        predictor_cols.append('BO_GP')
+        for col in predictor_cols:
+            results_df[col + '_Rank'] = results_df[col].rank(ascending=False, method='min')
+        
+        # Save the results DataFrame to an Excel file named with the current sample size
+        output_file_path = os.path.join(output_dir, f'results_with_bo_predictions_{num_acquired_cofs}_samples.csv')
+        results_df.to_csv(output_file_path, index=False)
+        print(f"Results for sample size {num_acquired_cofs} saved to {output_file_path}")
+        
