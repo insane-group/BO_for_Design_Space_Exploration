@@ -184,16 +184,7 @@ if __name__ == "__main__":
     y_train = acquired_data[y_column].values
 
     # Define the XGBoost regressor with the specified parameters
-    model = XGBRegressor(
-        n_estimators=800,
-        max_depth=5,
-        eta=0.02,
-        subsample=0.75,
-        colsample_bytree=0.7,
-        reg_lambda=0.6,
-        reg_alpha=0.15,
-        random_state=61
-    )
+    model = globals.model
 
     # Train the XGBoost model
     model.fit(X_train, y_train)

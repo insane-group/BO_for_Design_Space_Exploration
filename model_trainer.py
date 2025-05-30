@@ -2,7 +2,6 @@ import torch
 import random
 import numpy as np
 import pandas as pd
-from xgboost import XGBRegressor
 
 import globals
 from optimization_processor import OptimizationProcessor
@@ -14,17 +13,7 @@ class ModelTrainer:
         self.y_column        = y_column
         self.feature_columns = feature_columns
         self.bo_points_dict  = bo_points_dict
-
-        self.xgb_model       = XGBRegressor(
-                                            n_estimators=800,
-                                            max_depth=5,
-                                            eta=0.02,
-                                            subsample=0.75,
-                                            colsample_bytree=0.7,
-                                            reg_lambda=0.6,
-                                            reg_alpha=0.15,
-                                            random_state=61
-                                        )
+        self.xgb_model       = globals.model
 
         self.X_full                 = data[feature_columns].values
         self.y_full                 = data[y_column].values
