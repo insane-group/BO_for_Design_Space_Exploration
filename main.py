@@ -112,7 +112,7 @@ if __name__ == "__main__":
     print("\t\tcost: ", cost.shape)
 
     # Use updated BO run (set nb_iterations appropriately)
-    acquired_set, bo_points_dict = OptimizationProcessor.run_Bayesian_optimization(nb_iterations, init_cof_ids[0], verbose=False, target_variable=y)
+    acquired_set, bo_points_dict = OptimizationProcessor.run_Bayesian_optimization(nb_iterations, init_cof_ids[0], verbose=False, target_variable=y, X=X)
 
     cof_ids = [int(acquired_set[i][0].item()) for i in range(len(acquired_set))]
 
