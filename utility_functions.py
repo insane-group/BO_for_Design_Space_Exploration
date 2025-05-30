@@ -1,4 +1,135 @@
 import numpy as np
+import pandas as pd
+
+def select_dataset(target_property):
+
+    if target_property == "nch4" or target_property == "nh2":
+
+        if target_property == "nch4":
+
+            df = pd.read_csv('./datasets/HypoCOF-CH4H2-CH4-1bar-TPOT-Input-B - Original.csv')
+            y_column = 'NCH4 - 1 bar (mol/kg)'
+    
+        else:    
+            df = pd.read_csv('./datasets/HypoCOF-CH4H2-H2-1bar-TPOT-Input-B - Original.csv')
+            y_column = 'NH2 - 1 bar (mol/kg)'
+
+        feature_columns = [  'PLD (Å)', 'LCD (Å)', 'Sacc (m2/gr)', 'Porosity', 'Density (gr/cm3)',
+                # 'Qst-CH4 (kJ/mol)',
+                '%C', '%F', '%H', '%N', '%O', '%S', '%Si'
+                ]
+
+    elif target_property == "del_capacity" or target_property == "high_uptake_mol":
+
+        df = pd.read_csv('./datasets/dataset_v1.csv')
+
+        # Drop the 'MOF_no' column as it is no longer needed
+        df.drop(columns=['number'], inplace=True)
+
+        feature_columns = [  'dimensions', 'bond_type','voidFraction',
+            'supercellVolume', 'density', 'surface_area', 'linkerA', 'linkerB', 
+            'net', 'cell_a', 'cell_b', 'cell_c', 'alpha_deg', 'beta_deg' ,'gamma_deg',
+            'chemical_formula', 'num_carbon','num_fluorine', 'num_hydrogen', 
+            'num_nitrogen', 'num_oxygen', 'num_sulfur','num_silicon', 'vertices', 'edges',
+            'genus', 'largest_incl_sphere','largest_free_sphere', 'largest_incl_sphere_along_path']
+
+        if target_property == "del_capacity":
+            y_column = 'del_capacity'
+        else:
+            y_column = 'highUptake_mol'
+
+    elif target_property == "uptake_vol" or target_property == "uptake_grav":
+
+        df = pd.read_csv('./datasets/mofdb.csv')
+
+        threshold = 60
+
+        missing_counts = df.isnull().sum()
+        missing_counts
+        filtered_columns = missing_counts[missing_counts <= threshold].index
+        df_filtered = df[filtered_columns]
+        df_filtered
+        df = df_filtered[['asa_grav [m²/g]', 'asa_vol [m²/cm³]', 'av_vf', 'pore_volume [cm³/g]', 'density [g/cm³]', 'uptake_grav [wt. %]',
+                        'lcd [Å]', 'pld [Å]', 'LFPD [Å]',
+                        'cell_volume [Å³]', 'uptake_vol [g H2/L]']]
+
+        feature_columns = ['asa_grav [m²/g]', 'asa_vol [m²/cm³]', 'av_vf', 'pore_volume [cm³/g]', 
+                        'density [g/cm³]','lcd [Å]', 'pld [Å]', 'LFPD [Å]','cell_volume [Å³]']
+
+        if target_property == "uptake_vol":
+            y_column = 'uptake_vol [g H2/L]'
+        else:
+            y_column = 'uptake_grav [wt. %]'
+
+    elif target_property == "d_o2" or target_property == "d_sel":
+
+        df = pd.read_csv('./datasets/MOFdata_O2_H2_uptakes.csv')
+        # df['D_sel']= df['SelfdiffusionofO2cm2s']/df['SelfdiffusionofN2cm2s']
+        df['D_sel']= np.log10(df['SelfdiffusionofO2cm2s']) - np.log10(df['SelfdiffusionofN2cm2s'])
+        df['D_o2'] = np.log10(df['SelfdiffusionofO2cm2s'])
+        df['D_n2'] = np.log10(df['SelfdiffusionofN2cm2s'])
+
+        feature_columns = [ 'LCD', 'PLD','LFPD','Volume', 'ASA_m2_g', 'ASA_m2_cm3',
+            'NASA_m2_g', 'NASA_m2_cm3', 'AV_VF', 'AV_cm3_g', 'NAV_cm3_g',
+            # ' H','C', 'N' ,'F' ,'Cl', 'Br', 'V', 'Cu', 'Zn', 'Zr', 
+            'metal type',
+            # ' total degree of unsaturation', 'metalic percentage', ' oxygetn-to-metal ratio',
+            #  'electronegtive-to-total ratio', ' weighted electronegativity per atom', ' nitrogen to oxygen '
+            ]
+
+        if target_property == "d_o2":
+            y_column = 'D_o2'
+        else:
+            y_column = 'D_sel'
+
+    elif target_property in ["co2_uptake", "selectivity", "working_capacity", "h2_absorbed", "c3h8_c3h6", "c2h6_c2h4", "propane_avg", "propylene_avg", "ethane_avg", "ethylene_avg"]:
+
+        df = pd.read_csv('./datasets/Merged_Dataset.csv')
+
+        feature_columns = ['POAVF', 'CellV (A^3)', 'total_POV_volumetric','sum-mc_CRY-I-3-all', 'Df_y',
+                           'metallic_percentage', 'Di', 'ASA(m2/gram)_1.9', 'O', 'degree_unsaturation', 
+                           'C', 'sum-mc_CRY-chi-3-all', 'ASA (m^2/cm^3)','sum-f-lig-Z-0', 'f-lig-T-3', 'Dif', 'Ni',
+                            # 'H', 'N','Br','Cd'
+                            ]
+
+        if target_property == "co2_uptake":
+            y_column = 'CO2_uptake_1bar_298K (mmol/g)'
+        elif target_property == "selectivity":
+            y_column = 'Selectivity'
+        elif target_property == "working_capacity":
+            y_column = 'Working_Capacity (mmol/g)'
+        elif target_property == "h2_absorbed":
+            y_column = 'H2_adsorbed_100bar_77K (mg/g)'
+        elif target_property == "c3h8_c3h6":
+            y_column = 'C3H8/C3H6 Selectivity (1Bar)'
+        elif target_property == "c2h6_c2h4":
+            y_column = 'C2H6/C2H4 Selectivity (1Bar)'
+        elif target_property == "propane_avg":
+            y_column = 'propane_avg(mol/kg)'
+        elif target_property == "propylene_avg":
+            y_column = 'propylene_avg(mol/kg)'
+        elif target_property == "ethane_avg":
+            y_column = 'ethane_avg(mol/kg)'
+        else:
+            y_column = 'ethylene_avg(mol/kg)'
+
+    else:
+        print("The inserted dataset name does not exist. Please selecet on of the following names: \n" \
+        "'nch4', 'nh2', 'del_capacity', 'high_uptake_mol', 'co2_uptake', 'selectivity', 'working_capacity', 'h2_absorbed', 'c3h8_c3h6', 'c2h6_c2h4', 'propane_avg', 'propylene_avg', 'ethane_avg', 'ethylene_avg', 'uptake_vol', 'uptake_grav', 'do2', 'd_sel'")
+        exit()
+
+    row_count = df.shape[0]
+    print("Number of rows in the dataset:", row_count)
+    df.dropna(inplace=True)
+
+    row_count = df.shape[0]
+    print("Number of rows in the dataset:", row_count)
+
+    # Display the column names
+    print("Column names in the file:")
+    print(df.columns.tolist())
+
+    return df, feature_columns, y_column
 
 def calculate_r2_score(y_true, y_pred):
     
