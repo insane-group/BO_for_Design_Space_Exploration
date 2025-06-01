@@ -89,7 +89,7 @@ class OptimizationProcessor:
 
         # Create directory to save BO checkpoint files
 
-        bo_save_dir = "bo_points"
+        bo_save_dir = os.path.join(globals.save_dir, "bo_points")
         os.makedirs(bo_save_dir, exist_ok=True)
 
         bo_points_dict = {}
