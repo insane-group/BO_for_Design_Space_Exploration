@@ -7,8 +7,10 @@ PRECISION = torch.float64       # Variable to adjusting the precision
 INITS = 3                       # Number of initial points from the design space to start the BO
 BATCH_SIZE = 5                  # Define the batch size for sampling
 TOP = 10                        # Define the number of top COFs to be predicted
+
 next_threshold = 50
-nb_iterations = ITER
+nb_iterations  = ITER
+save_dir       = None
 
                                 # Define exploration-exploitation parameter for acquisition function
 INITIAL_XI = 0.0                # Initial value for xi
