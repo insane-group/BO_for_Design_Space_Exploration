@@ -1,6 +1,7 @@
 import os
 import re
 import glob
+import globals
 import argparse
 import pandas as pd
 
@@ -23,15 +24,11 @@ if __name__ == '__main__':
             print(f"Path {results_path} does not exist. Please provide a valid path.")
             exit()
 
-        file_pattern = os.path.join(results_path, 'results_with_bo_predictions_*_samples.csv')
-
     else:
-        print("No path provided. Please provide a valid path. e.g. '/COF_CH4_H2_Keskin_dataset/random_sampling_plots_methane'")
+        print("No path provided. Please provide a valid path. e.g. '/COF_CH4_H2_Keskin_dataset/random_sampling_plots'")
         exit()
 
-    # Map each dataset name to a save name for the metric results.
-    dataset_name_to_save_name = {
-        'COF_CH4_H2_Keskin_dataset': 'COF_CH4_H2_Keskin'}
+    file_pattern = os.path.join(results_path, 'results_with_bo_predictions_*_samples.csv')
 
     # Use glob to match files with the pattern. Adjust the pattern if needed.
     files = glob.glob(file_pattern)
@@ -57,9 +54,7 @@ if __name__ == '__main__':
 
     # Create a summary DataFrame and save to CSV
     summary_df   = pd.DataFrame(all_metrics)
-
-    dataset_name = results_path.split(os.path.sep)[-2]
-    save_path = os.path.join(dataset_name, dataset_name_to_save_name[dataset_name] + '.csv')
+    save_path = os.path.join(globals.save_dir,"evaluation_metrics_results" + '.csv')
 
     summary_df.to_csv(save_path, index=False)
     print("Saved evaluation metrics to evaluation_metrics_summary.csv")
