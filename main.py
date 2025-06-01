@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-t',   '--target',  help='Define the name of the desired target property.', default="nch4")
     
-    parsed_args    = parser.parse_args()
+    parsed_args       = parser.parse_args()
     target_property   = parsed_args.target
 
     print(f"Using device: {globals.device}")
@@ -231,12 +231,12 @@ if __name__ == "__main__":
     print(f'Number of B.O. picked COFs in top 100 actual COFs: {count_bo_picked_in_top_100_actual}')
 
     # save the dictionary of BO checkpoints
-    with open("bo_points_dict.pkl", "wb") as f:
+    with open(os.path.join(globals.save_dir, "bo_points_dict.pkl"),  "wb") as f:
         pickle.dump(bo_points_dict, f)
     print("All BO checkpoint sets saved.")
 
     # Define output directory for results (one file per checkpoint)
-    output_dir = 'random_sampling_plots_methane'
+    output_dir = os.path.join(globals.save_dir, 'random_sampling_plots')
     os.makedirs(output_dir, exist_ok=True)
 
     model_trainer = ModelTrainer(df, feature_columns, y_column, bo_points_dict)
