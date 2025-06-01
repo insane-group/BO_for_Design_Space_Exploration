@@ -1,5 +1,8 @@
+import os
 import numpy as np
 import pandas as pd
+
+import globals
 
 def select_dataset(target_property):
 
@@ -9,10 +12,14 @@ def select_dataset(target_property):
 
             df = pd.read_csv('./datasets/HypoCOF-CH4H2-CH4-1bar-TPOT-Input-B - Original.csv')
             y_column = 'NCH4 - 1 bar (mol/kg)'
+
+            globals.save_dir = 'COF_CH4_H2_Keskin_NCH4'
     
         else:    
             df = pd.read_csv('./datasets/HypoCOF-CH4H2-H2-1bar-TPOT-Input-B - Original.csv')
             y_column = 'NH2 - 1 bar (mol/kg)'
+
+            globals.save_dir = 'COF_CH4_H2_Keskin_NH2'
 
         feature_columns = [  'PLD (Å)', 'LCD (Å)', 'Sacc (m2/gr)', 'Porosity', 'Density (gr/cm3)',
                 # 'Qst-CH4 (kJ/mol)',
@@ -35,8 +42,13 @@ def select_dataset(target_property):
 
         if target_property == "del_capacity":
             y_column = 'del_capacity'
+
+            globals.save_dir = 'COF_del_capacity'
         else:
             y_column = 'highUptake_mol'
+
+            globals.save_dir = 'COF_high_uptake_mol'
+
 
     elif target_property == "uptake_vol" or target_property == "uptake_grav":
 
@@ -58,8 +70,13 @@ def select_dataset(target_property):
 
         if target_property == "uptake_vol":
             y_column = 'uptake_vol [g H2/L]'
+
+            globals.save_dir = 'Hydrogen_uptake_vol'
+
         else:
             y_column = 'uptake_grav [wt. %]'
+
+            globals.save_dir = 'Hydrogen_uptake_grav'
 
     elif target_property == "d_o2" or target_property == "d_sel":
 
@@ -79,8 +96,13 @@ def select_dataset(target_property):
 
         if target_property == "d_o2":
             y_column = 'D_o2'
+
+            globals.save_dir = 'MOF_O2_N2_d_o2'
+
         else:
             y_column = 'D_sel'
+
+            globals.save_dir = 'MOF_O2_N2_d_sel'
 
     elif target_property in ["co2_uptake", "selectivity", "working_capacity", "h2_absorbed", "c3h8_c3h6", "c2h6_c2h4", "propane_avg", "propylene_avg", "ethane_avg", "ethylene_avg"]:
 
@@ -94,24 +116,43 @@ def select_dataset(target_property):
 
         if target_property == "co2_uptake":
             y_column = 'CO2_uptake_1bar_298K (mmol/g)'
+            globals.save_dir = 'Ethyl_propyl_CO2_uptake'
+
         elif target_property == "selectivity":
             y_column = 'Selectivity'
+            globals.save_dir = 'Ethyl_propyl_selectivity'
+
         elif target_property == "working_capacity":
             y_column = 'Working_Capacity (mmol/g)'
+            globals.save_dir = 'Ethyl_propyl_working_capacity'
+
         elif target_property == "h2_absorbed":
             y_column = 'H2_adsorbed_100bar_77K (mg/g)'
+            globals.save_dir = 'Ethyl_propyl_h2_absorbed'
+
         elif target_property == "c3h8_c3h6":
             y_column = 'C3H8/C3H6 Selectivity (1Bar)'
+            globals.save_dir = 'Ethyl_propyl_c3h8_c3h6'
+
         elif target_property == "c2h6_c2h4":
             y_column = 'C2H6/C2H4 Selectivity (1Bar)'
+            globals.save_dir = 'Ethyl_propyl_c2h6_c2h4'
+
         elif target_property == "propane_avg":
             y_column = 'propane_avg(mol/kg)'
+            globals.save_dir = 'Ethyl_propyl_propane_avg'
+
         elif target_property == "propylene_avg":
             y_column = 'propylene_avg(mol/kg)'
+            globals.save_dir = 'Ethyl_propyl_propylene_avg'
+
         elif target_property == "ethane_avg":
             y_column = 'ethane_avg(mol/kg)'
+            globals.save_dir = 'Ethyl_propyl_ethane_avg'
+
         else:
             y_column = 'ethylene_avg(mol/kg)'
+            globals.save_dir = 'Ethyl_propyl_ethylene_avg'
 
     else:
         print("The inserted dataset name does not exist. Please selecet on of the following names: \n" \
@@ -128,6 +169,10 @@ def select_dataset(target_property):
     # Display the column names
     print("Column names in the file:")
     print(df.columns.tolist())
+
+    # Create save dir if it doesn't exist
+    if not os.path.exists(globals.save_dir):
+        os.makedirs(globals.save_dir)
 
     return df, feature_columns, y_column
 
