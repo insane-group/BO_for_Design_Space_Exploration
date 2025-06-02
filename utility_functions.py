@@ -22,9 +22,7 @@ def select_dataset(target_property):
             globals.save_dir = 'COF_CH4_H2_Keskin_NH2'
 
         feature_columns = [  'PLD (Å)', 'LCD (Å)', 'Sacc (m2/gr)', 'Porosity', 'Density (gr/cm3)',
-                # 'Qst-CH4 (kJ/mol)',
-                '%C', '%F', '%H', '%N', '%O', '%S', '%Si'
-                ]
+                            '%C', '%F', '%H', '%N', '%O', '%S', '%Si']
 
     elif target_property == "del_capacity" or target_property == "high_uptake_mol":
 
@@ -87,12 +85,7 @@ def select_dataset(target_property):
         df['D_n2'] = np.log10(df['SelfdiffusionofN2cm2s'])
 
         feature_columns = [ 'LCD', 'PLD','LFPD','Volume', 'ASA_m2_g', 'ASA_m2_cm3',
-            'NASA_m2_g', 'NASA_m2_cm3', 'AV_VF', 'AV_cm3_g', 'NAV_cm3_g',
-            # ' H','C', 'N' ,'F' ,'Cl', 'Br', 'V', 'Cu', 'Zn', 'Zr', 
-            'metal type',
-            # ' total degree of unsaturation', 'metalic percentage', ' oxygetn-to-metal ratio',
-            #  'electronegtive-to-total ratio', ' weighted electronegativity per atom', ' nitrogen to oxygen '
-            ]
+            'NASA_m2_g', 'NASA_m2_cm3', 'AV_VF', 'AV_cm3_g', 'NAV_cm3_g','metal type']
 
         if target_property == "d_o2":
             y_column = 'D_o2'
@@ -110,9 +103,7 @@ def select_dataset(target_property):
 
         feature_columns = ['POAVF', 'CellV (A^3)', 'total_POV_volumetric','sum-mc_CRY-I-3-all', 'Df_y',
                            'metallic_percentage', 'Di', 'ASA(m2/gram)_1.9', 'O', 'degree_unsaturation', 
-                           'C', 'sum-mc_CRY-chi-3-all', 'ASA (m^2/cm^3)','sum-f-lig-Z-0', 'f-lig-T-3', 'Dif', 'Ni',
-                            # 'H', 'N','Br','Cd'
-                            ]
+                           'C', 'sum-mc_CRY-chi-3-all', 'ASA (m^2/cm^3)','sum-f-lig-Z-0', 'f-lig-T-3', 'Dif', 'Ni']
 
         if target_property == "co2_uptake":
             y_column = 'CO2_uptake_1bar_298K (mmol/g)'
