@@ -6,10 +6,8 @@ import pickle
 import argparse
 import numpy as np
 import pandas as pd
-from sklearn.metrics import r2_score, mean_absolute_error
-
-from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import r2_score, mean_absolute_error
 
 import globals
 from model_trainer import ModelTrainer
@@ -117,11 +115,6 @@ if __name__ == "__main__":
 
     # Calculate evaluation metrics
     y_true = [y[c].item() for c in range(nb_COFs)]
-    r2 = r2_score(y_true, y_pred)
-    abserr = mean_absolute_error(y_true, y_pred)
-
-    print("R² score:", r2)
-    print("Mean Absolute Error:", abserr)
 
     # Identify the top 100 COFs based on the predicted values
     predicted_top_100_indices = np.argsort(y_pred)[-globals.TOP:]
@@ -136,10 +129,6 @@ if __name__ == "__main__":
     # Standardize the entire dataset
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X.cpu().numpy())
-
-    # Perform PCA on the standardized dataset
-    pca = PCA(n_components=2)
-    X_pca = pca.fit_transform(X_scaled)
 
     # Convert y_true to a NumPy array before calling the function
     y_true_np = np.array(y_true)
