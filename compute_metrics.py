@@ -2,7 +2,6 @@ import os
 import re
 import glob
 import globals
-import argparse
 import pandas as pd
 
 from evaluation_metrics import compute_metrics_from_file
@@ -10,14 +9,7 @@ from evaluation_metrics import compute_metrics_from_file
 # -------------------------------
 # Main loop: iterate through files, compute metrics, and save summary CSV
 # -------------------------------
-if __name__ == '__main__':
-
-    # Parse command line arguments to get the path to the desired dataset results.
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p',   '--path',  help='Define the path to the desired dataset results.', default=None)
-    
-    parsed_args = parser.parse_args()
-    results_path         = parsed_args.path
+def compute_metrics(results_path : str):
 
     if results_path is not None: 
         if not os.path.exists(results_path):
@@ -54,7 +46,7 @@ if __name__ == '__main__':
 
     # Create a summary DataFrame and save to CSV
     summary_df   = pd.DataFrame(all_metrics)
-    save_path = os.path.join(globals.save_dir,"evaluation_metrics_results" + '.csv')
+    save_path = os.path.join(globals.save_dir,"evaluation_metrics_results" + ".csv")
 
     summary_df.to_csv(save_path, index=False)
     print("Saved evaluation metrics to evaluation_metrics_summary.csv")
