@@ -12,11 +12,14 @@ next_threshold = 50
 nb_iterations  = ITER
 save_dir       = None
 
-                                # Define exploration-exploitation parameter for acquisition function
+# Define exploration-exploitation parameter for acquisition function
+
 INITIAL_XI = 0.0                # Initial value for xi
 FINAL_XI = 0.0                  # Final value for xi after threshold
 XI_THRESHOLD = 100              # Threshold iteration to change xi
-GPmodel = "single"
+
+# Zero values for INITIAL_XI and FINAL_XI will result in  a default bo behaviour.
+
 
 model = XGBRegressor(           # Define the XGBoost regressor
             n_estimators=800,
