@@ -20,6 +20,7 @@ XI_THRESHOLD = 100              # Threshold iteration to change xi
 
 # Zero values for INITIAL_XI and FINAL_XI will result in  a default bo behaviour.
 
+GPmodel = "single"
 
 model = XGBRegressor(           # Define the XGBoost regressor
             n_estimators=800,
