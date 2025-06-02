@@ -13,24 +13,31 @@ import globals
 from model_trainer import ModelTrainer
 from cof_processor import COFProcessor
 from optimization_processor import OptimizationProcessor
+from compute_metrics import compute_metrics
 from utility_functions import select_dataset, calculate_r2_score, explained_variance
 
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('-t',   '--target',  help='Define the name of the desired target property.', default="nch4")
+    parser.add_argument('-p',   '--path',    help='Define the path to the desired dataset results.', default=None)
     
     parsed_args       = parser.parse_args()
     target_property   = parsed_args.target
-
-    print(f"Using device: {globals.device}")
+    results_path      = parsed_args.path
 
     # Set default tensor type to PRECISION
     torch.set_default_dtype(globals.PRECISION)
 
-    np.random.seed(11)
-
     df, feature_columns, y_column = select_dataset(target_property)
+
+    if results_path is not None:         
+        compute_metrics(results_path)
+        exit()
+
+    print(f"Using device: {globals.device}")
+
+    np.random.seed(11)
 
     feature_columns_df = df[feature_columns]
 
