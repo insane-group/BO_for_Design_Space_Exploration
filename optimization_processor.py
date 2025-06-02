@@ -148,7 +148,7 @@ class OptimizationProcessor:
                 save_filename = os.path.join(bo_save_dir, f"bo_points_iter_{iter_key}.csv")
                 np.savetxt(save_filename, current_sample, delimiter=",", fmt='%d')
                 print(f"Saved BO sampled points at iteration {iter_key} to {save_filename}")
-                local_threshold += 50
+                local_threshold += globals.next_threshold
 
             if i >= max_iteration:
                 print(f"Iteration count exceeded {max_iteration}. Stopping optimization.")
