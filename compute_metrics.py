@@ -25,7 +25,7 @@ if __name__ == '__main__':
             exit()
 
     else:
-        print("No path provided. Please provide a valid path. e.g. '/COF_CH4_H2_Keskin_dataset/random_sampling_plots'")
+        print("No path provided. Please provide a valid path. e.g. './COF_CH4_H2_Keskin_NCH4/random_sampling_plots'")
         exit()
 
     file_pattern = os.path.join(results_path, 'results_with_bo_predictions_*_samples.csv')
