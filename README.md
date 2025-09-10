@@ -100,6 +100,44 @@ Depending on the selected target property the code will create a specific direct
 
 
 
+## Results
+
+Depending on the target parameter that the user selects, a folder containing the results is created with a specific name. The mapping of property to directory name is presented in the table below:
+
+
+
+|  target parameter  |    Results Directory Name     |
+| :----------------: | :---------------------------: |
+|       *nch4*       |    COF_CH4_H2_Keskin_NCH4     |
+|       *nh2*        |     COF_CH4_H2_Keskin_NH2     |
+|   *del_capacity*   |       COF_del_capacity        |
+| *high_uptake_mol*  |      COF_high_uptake_mol      |
+|    *uptake_vol*    |      Hydrogen_uptake_vol      |
+|   *uptake_grav*    |     Hydrogen_uptake_grav      |
+|       *d_o2*       |        MOF_O2_N2_d_o2         |
+|      *d_sel*       |        MOF_O2_N2_d_sel        |
+|    *co2_uptake*    |    Ethyl_propyl_CO2_uptake    |
+|   *selectivity*    |   Ethyl_propyl_selectivity    |
+| *working_capacity* | Ethyl_propyl_working_capacity |
+|   *h2_absorbed*    |   Ethyl_propyl_h2_absorbed    |
+|    *c3h8_c3h6*     |    Ethyl_propyl_c3h8_c3h6     |
+|    *c2h6_c2h4*     |    Ethyl_propyl_c2h6_c2h4     |
+|   *propane_avg*    |   Ethyl_propyl_propane_avg    |
+|  *propylene_avg*   |  Ethyl_propyl_propylene_avg   |
+|    *ethane_avg*    |    Ethyl_propyl_ethane_avg    |
+|   *ethylene_avg*   |   Ethyl_propyl_ethylene_avg   |
+
+Inside there are two folders contained:
+
+- bo_points
+- sampling_results
+
+The first directory contains one csv file for each BO iteration, and each file contains the ids of the selected samples. 
+
+The second directory contains one csv file for each iteration. In each file there is a list of the ids of the top-N samples (N is manually set in the globals.py file). For each on of the real top samples we keep the information concerning whether it has been sampled (both in random and bo iterations) and also how high in the ranking of each iteration it has been placed.
+
+
+
 ## Data
 
 All the datasets used for our experiments are contained in the *datasets* directory.
