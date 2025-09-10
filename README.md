@@ -66,7 +66,7 @@ python ./main.py -t nch4
 or 
 
 ```bash
-python ./main.py -p ./COF_CH4_H2_Keskin_NCH4/random_sampling_plots
+python ./main.py -p ./COF_CH4_H2_Keskin_NCH4/sampling_results
 ```
 
 
@@ -135,6 +135,8 @@ Inside there are two folders contained:
 The first directory contains one csv file for each BO iteration, and each file contains the ids of the selected samples. 
 
 The second directory contains one csv file for each iteration. In each file there is a list of the ids of the top-N samples (N is manually set in the globals.py file). For each on of the real top samples we keep the information concerning whether it has been sampled (both in random and bo iterations) and also how high in the ranking of each iteration it has been placed.
+
+In case the program is run with the -p parameter and the evaluation functions are called then a file named *evaluation_metrics_results.csv* will appear in the results directory containing the evaluation metrics for each run of different sample size.
 
 
 
