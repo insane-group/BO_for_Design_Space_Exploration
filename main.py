@@ -232,7 +232,7 @@ if __name__ == "__main__":
     print("All BO checkpoint sets saved.")
 
     # Define output directory for results (one file per checkpoint)
-    output_dir = os.path.join(globals.save_dir, 'random_sampling_plots')
+    output_dir = os.path.join(globals.save_dir, 'sampling_results')
     os.makedirs(output_dir, exist_ok=True)
 
     model_trainer = ModelTrainer(df, feature_columns, y_column, bo_points_dict)
