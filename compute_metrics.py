@@ -17,7 +17,7 @@ def compute_metrics(results_path : str):
             exit()
 
     else:
-        print("No path provided. Please provide a valid path. e.g. './COF_CH4_H2_Keskin_NCH4/random_sampling_plots'")
+        print("No path provided. Please provide a valid path. e.g. './COF_CH4_H2_Keskin_NCH4/sampling_results'")
         exit()
 
     file_pattern = os.path.join(results_path, 'results_with_bo_predictions_*_samples.csv')
