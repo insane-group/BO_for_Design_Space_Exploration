@@ -96,7 +96,7 @@ This is a list of all the possible inputs that the -t parameter can get.
 
 The parameters for the Bayesian Optimisation are defined in the *globals.py* file and can be modified according to user preferences.
 
-Depending on the selected target property the code will create a specific directory which will contain all the result files.
+**NOTE** During runtime the warning "InputDataWarning: Data (input features) is not contained to the unit cube. Please consider min-max scaling the input data" appears. This is due to the lack of feature normalisation on the evaluation phase when a Gaussian Process model is trained with the samples selected by the BO, and it does not hinder the execution of the program.
 
 
 
